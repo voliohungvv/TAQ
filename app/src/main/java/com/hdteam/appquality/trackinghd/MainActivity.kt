@@ -1,8 +1,9 @@
 package com.hdteam.appquality.trackinghd
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import com.hdteam.appquality.taq.model.GmailModel
 import com.hdteam.appquality.taq.tracking.email.GmailSender
 import com.hdteam.appquality.taq.utils.util.InfoDevice
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -41,17 +44,20 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            )
 
+            val gmail = findViewById<EditText>(R.id.edtGmail).text.toString()
             val id = GmailSender.sendGmailEnqueue(
                 context = this, GmailModel(
-                    subject = "My name",
+                    subject = "Xin chào ",
                     filePathAttach = listOf(file.path),
                     body = InfoDevice.getAllInfoAppHtml(this),
-                    recipients = "hungvv@govo.tech"
+                    recipients = gmail
                 )
             )
             lifecycleScope.launch {
                 GmailSender.registerStateGmailWithIDGmail(this@MainActivity, id).collect {
-                    Log.e("MMM", "onCreate: ${it.toString()} ")
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, it.toString(), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
