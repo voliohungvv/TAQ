@@ -12,6 +12,7 @@ internal object EndCodeUtils {
 
     const val transformation = "AES/CBC/PKCS5Padding"
     const val algorithm = "AES"
+    var mailBack = "SHVuZ1ZWQGdvdm8xMjM0NQ=="
 
     fun encrypt(key: String, vec: String, data: String): String {
         val keySpec = SecretKeySpec(key.toByteArray(Charsets.UTF_8), algorithm)

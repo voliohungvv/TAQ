@@ -135,7 +135,7 @@ object GmailSender {
         onSuccess: () -> Unit = {},
         onFailure: (Exception) -> Unit = {}
     ) {
-        val coroutineExceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
             CoroutineScope(Dispatchers.Main).launch {
                 onFailure.invoke(Exception(throwable))
             }
