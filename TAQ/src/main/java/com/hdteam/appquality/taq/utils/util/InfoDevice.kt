@@ -151,6 +151,11 @@ object InfoDevice {
         return Pair(availableRam, totalRam)
     }
 
+    fun getRamInfoFormat(context: Context): String {
+        val (availableRam, totalRam) = getRamInfo(context)
+        return "${FormatUtils.formatBytes(availableRam)}/${FormatUtils.formatBytes(totalRam)}"
+    }
+
     fun getStorageInfo(): Pair<Long, Long> {
         val stat = StatFs(Environment.getExternalStorageDirectory().path)
         val blockSize = stat.blockSizeLong

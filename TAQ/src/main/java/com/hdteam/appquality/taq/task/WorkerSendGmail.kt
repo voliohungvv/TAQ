@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 Created by HungVV
 Created at 14:12/05-09-2024
  ***/
-
+private const val TAG = "WorkerSendGmail"
 internal class WorkerSendGmail(context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
@@ -26,9 +26,11 @@ internal class WorkerSendGmail(context: Context, workerParams: WorkerParameters)
                     GmailSender.sendMailNormalSync(gmail)
                     Result.success()
                 } catch (e: Exception) {
+                    Log.e(TAG, "doWork: ${e.toString()}", )
                     Result.failure()
                 }
             } else {
+                Log.e(TAG, "doWork: gmail is null", )
                 Result.failure()
             }
         }

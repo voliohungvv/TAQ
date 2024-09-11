@@ -45,21 +45,21 @@ class MainActivity : AppCompatActivity() {
 //            )
 
             val gmail = findViewById<EditText>(R.id.edtGmail).text.toString()
-            val id = GmailSender.sendGmailEnqueue(
-                context = this, GmailModel(
-                    subject = "Xin chào ",
-                    filePathAttach = listOf(file.path),
-                    body = InfoDevice.getAllInfoAppHtml(this),
-                    recipients = gmail
-                )
-            )
-            lifecycleScope.launch {
-                GmailSender.registerStateGmailWithIDGmail(this@MainActivity, id).collect {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, it.toString(), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+//            val id = GmailSender.sendGmailEnqueue(
+//                context = this, GmailModel(
+//                    subject = "Xin chào ",
+//                    filePathAttach = listOf(file.path),
+//                    body = InfoDevice.getAllInfoAppHtml(this),
+//                    recipients = gmail
+//                )
+//            )
+//            lifecycleScope.launch {
+//                GmailSender.registerStateGmailWithIDGmail(this@MainActivity, id).collect {
+//                    withContext(Dispatchers.Main) {
+//                        Toast.makeText(this@MainActivity, it.toString(), Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
         }
 
 
