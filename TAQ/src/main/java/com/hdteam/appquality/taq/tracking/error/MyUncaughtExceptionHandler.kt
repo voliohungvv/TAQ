@@ -2,12 +2,14 @@ package com.hdteam.appquality.taq.tracking.error
 
 import android.text.TextUtils
 import android.util.Log
+import com.hdteam.appquality.taq.di.ProviderInstance
 
 /***
 Create by HungVV
 Create at 16:36/11-09-2024
  ***/
 private const val TAG = "MainUncaughtExceptionHandler"
+
 class MainUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
 
     private val otherHandlers = mutableListOf<Thread.UncaughtExceptionHandler>()
@@ -22,13 +24,13 @@ class MainUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
 
         var cause: String? = throwable.message
 
-        var  mThrowable:Throwable? = throwable
+        var mThrowable: Throwable? = throwable
         while (mThrowable?.cause != null) {
             mThrowable = mThrowable.cause
             if (mThrowable?.stackTrace?.isNotEmpty() == true)
                 rootTr = mThrowable
-            if(!mThrowable?.message.isNullOrEmpty()){
-               cause =  mThrowable?.message
+            if (!mThrowable?.message.isNullOrEmpty()) {
+                cause = mThrowable?.message
             }
         }
 
@@ -46,10 +48,19 @@ class MainUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
             throwMethodName = "unknown"
             throwLineNumber = 0
         }
-        Log.e(TAG, "exceptionType: ${exceptionType}", )
-        Log.e(TAG, "throwClassName: ${throwClassName}", )
-        Log.e(TAG, "throwMethodName: ${throwMethodName}", )
-        Log.e(TAG, "throwLineNumber: ${throwLineNumber}", )
+        Log.e(TAG, "exceptionType: ${exceptionType}")
+        Log.e(TAG, "throwClassName: ${throwClassName}")
+        Log.e(TAG, "throwMethodName: ${throwMethodName}")
+        Log.e(TAG, "throwLineNumber: ${throwLineNumber}")
+
+        ProviderInstance.logLocalRepo.insertInfoException(
+            methodName = throwMethodName,
+            error = "exceptionType = ${exceptionType}," +
+                    " throwClassName = ${throwClassName}," +
+                    " throwLineNumber =  ${throwLineNumber}," +
+                    " thread = ${thread.name}," +
+                    " e = ${throwable.message}"
+        )
         for (handler in otherHandlers) {
             handler.uncaughtException(thread, throwable)
         }

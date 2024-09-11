@@ -188,14 +188,21 @@ object InfoDevice {
         Resources.getSystem().displayMetrics.heightPixels
     )
 
-
-    fun getInfoVersionApp(context: Context) = try {
+    fun getVersionCode(context: Context) = try {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             pInfo.longVersionCode
         } else {
             pInfo.versionCode.toLong()
         }
+        versionCode
+    }catch (e: Exception){
+        -1
+    }
+
+    fun getInfoVersionApp(context: Context) = try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val versionCode = getVersionCode(context)
 
         val listInfo = mutableListOf<InfoDevice>()
         listInfo.add(InfoDevice(name = "App Name", value = getApplicationName(context)))

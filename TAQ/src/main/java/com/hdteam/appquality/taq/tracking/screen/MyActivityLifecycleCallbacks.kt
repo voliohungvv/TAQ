@@ -8,6 +8,7 @@ import android.util.Log
 import com.hdteam.appquality.taq.data.local.model.LogLocal
 import com.hdteam.appquality.taq.di.DataModule
 import com.hdteam.appquality.taq.di.ProviderInstance
+import com.hdteam.appquality.taq.tracking.TAQ
 import com.hdteam.appquality.taq.utils.util.InfoDevice
 
 /***
@@ -18,31 +19,32 @@ private const val TAG = "MyActivityLifecycleCallbacks"
 
 class MyActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(p0: Activity, p1: Bundle?) {
-        Log.e(TAG, "onActivityCreated: ${p0.javaClass.simpleName}")
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0)
+        TAQ.setCurrentActivity(p0)
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityCreated")
     }
 
     override fun onActivityStarted(p0: Activity) {
-        Log.e(TAG, "onActivityStarted: ${p0.javaClass.simpleName}")
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityStarted")
     }
 
     override fun onActivityResumed(p0: Activity) {
-        Log.e(TAG, "onActivityResumed: ${p0.javaClass.simpleName}")
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityResumed")
     }
 
     override fun onActivityPaused(p0: Activity) {
-        Log.e(TAG, "onActivityPaused: ${p0.javaClass.simpleName}")
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityPaused")
     }
 
     override fun onActivityStopped(p0: Activity) {
-        Log.e(TAG, "onActivityStopped: ${p0.javaClass.simpleName}")
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityStopped")
     }
 
     override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
-        Log.e(TAG, "onActivitySaveInstanceState: ${p0.javaClass.simpleName}")
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivitySaveInstanceState")
     }
 
     override fun onActivityDestroyed(p0: Activity) {
-        Log.e(TAG, "onActivityDestroyed: ${p0.javaClass.simpleName}")
+        TAQ.setCurrentActivity(null)
+        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityDestroyed")
     }
 }

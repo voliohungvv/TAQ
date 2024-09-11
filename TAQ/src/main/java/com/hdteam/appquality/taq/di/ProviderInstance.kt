@@ -14,6 +14,6 @@ private const val TAG = "ProviderInstance"
 internal object ProviderInstance {
     val application: Application by lazy { TAQ.application }
     val appDatabase by lazy { DataModule.getInstance(appContext = application) }
-    val logLocalRepo by lazy { LogLocalRepositoryImpl(application, appDatabase) }
+    val logLocalRepo by lazy { LogLocalRepositoryImpl(application, sharePref,appDatabase) }
     val sharePref by lazy { SharePref.getInstance(application) }
 }

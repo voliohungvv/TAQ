@@ -1,6 +1,8 @@
 package com.hdteam.appquality.trackinghd
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -62,6 +64,9 @@ class MainActivity : AppCompatActivity() {
 //            }
         }
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            val a = 3/0
+        },5000)
 
     }
 }
