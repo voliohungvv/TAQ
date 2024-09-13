@@ -62,11 +62,10 @@ class MainActivity : AppCompatActivity() {
 //                    }
 //                }
 //            }
+            val a = 3/0
         }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            val a = 3/0
-        },5000)
+
 
     }
 }

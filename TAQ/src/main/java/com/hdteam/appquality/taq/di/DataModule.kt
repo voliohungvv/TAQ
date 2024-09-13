@@ -8,12 +8,13 @@ internal object DataModule {
 
     private var appDatabase: AppDatabase? = null
 
+
     private fun provideRoom(appContext: Application): AppDatabase {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
-            "tracking-app-quality-hd-database"
-        ).build()
+            AppDatabase.appDatabaseName
+        ).fallbackToDestructiveMigration().build()
     }
 
 
@@ -24,4 +25,5 @@ internal object DataModule {
             }
         }
     }
+
 }
