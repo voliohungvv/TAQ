@@ -3,6 +3,8 @@ package com.hdteam.appquality.taq.data.local.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
+import com.hdteam.appquality.taq.model.GmailModel
 
 /***
 Create by HungVV
@@ -36,6 +38,17 @@ internal data class LogLocal(
     @ColumnInfo(name = "version_app")
     val versionApp: String?,
 
+    @ColumnInfo(name = "created_at_raw")
+    val createdAtRaw: String?,
+
     @ColumnInfo(name = "created_at")
     val createdAt: String?
-)
+){
+    companion object {
+        fun fromJson(json: String?): LogLocal? = try {
+            Gson().fromJson(json, LogLocal::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
+}

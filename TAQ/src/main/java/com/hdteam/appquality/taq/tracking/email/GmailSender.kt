@@ -1,6 +1,7 @@
 package com.hdteam.appquality.taq.tracking.email
 
 import android.content.Context
+import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -40,9 +41,11 @@ Created by HungVV
 Created at 13:37/30-08-2024
  ***/
 
-
+private const val TAG = "GmailSender"
 object GmailSender {
 
+    private var timeSend = 0L
+    private val timeIntervalSend = 10_000
     private var user: String = "sender@gmail.com"
     private var password = ""
 
@@ -84,6 +87,12 @@ object GmailSender {
     fun sendMailNormalSync(
         gmail: GmailModel
     ) {
+        val timeSendInThisSession = System.currentTimeMillis() - timeSend
+        if(timeSendInThisSession < timeIntervalSend){
+            Log.e(TAG, "sendMailNormalSync: prevent send gmail ${timeSendInThisSession} < ${timeIntervalSend}", )
+            return
+        }
+        timeSend = System.currentTimeMillis()
         val message = MimeMessage(session)
 //        val handler = DataHandler(ByteArrayDataSource(body.toByteArray(), "text/plain"))
 //        message.dataHandler = handler
