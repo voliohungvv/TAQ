@@ -27,7 +27,7 @@ internal class LogLocalRepositoryImpl(
 ) :
     LogLocalRepository {
 
-    override fun insertInfoActivity(activity: Activity, methodName: String) {
+    override fun insertInfoActivity(activity: Activity,timeCreate: Long, methodName: String) {
         val logLocal = LogLocal(
             screenName = activity.javaClass.name,
             methodName = methodName,
@@ -36,6 +36,7 @@ internal class LogLocalRepositoryImpl(
             typeConnected = context.getTypeNetworkConnect(),
             session = sharedPref.getSessionOpenApp().toString(),
             versionApp = InfoDevice.getVersionCode(context).toString(),
+            createdAtRaw = System.currentTimeMillis().toString(),
             createdAt = FormatUtils.formatTime(System.currentTimeMillis())
 
         )
@@ -50,7 +51,7 @@ internal class LogLocalRepositoryImpl(
         }
     }
 
-    override fun insertInfoException(methodName:String,error: String) {
+    override fun insertInfoException(methodName:String,timeCreate: Long,error: String) {
         val logLocal = LogLocal(
             screenName = TAQ.currentActivity?.javaClass?.name,
             methodName = methodName,
@@ -59,7 +60,8 @@ internal class LogLocalRepositoryImpl(
             typeConnected = context.getTypeNetworkConnect(),
             session = sharedPref.getSessionOpenApp().toString(),
             versionApp = InfoDevice.getVersionCode(context).toString(),
-            createdAt = FormatUtils.formatTime(System.currentTimeMillis())
+            createdAtRaw = timeCreate.toString(),
+            createdAt = FormatUtils.formatTime(timeCreate)
 
         )
         CoroutineScope(Dispatchers.IO).launch {

@@ -2,14 +2,9 @@ package com.hdteam.appquality.taq.tracking.screen
 
 import android.app.Activity
 import android.app.Application
-import android.health.connect.datatypes.AppInfo
 import android.os.Bundle
-import android.util.Log
-import com.hdteam.appquality.taq.data.local.model.LogLocal
-import com.hdteam.appquality.taq.di.DataModule
 import com.hdteam.appquality.taq.di.ProviderInstance
 import com.hdteam.appquality.taq.tracking.TAQ
-import com.hdteam.appquality.taq.utils.util.InfoDevice
 
 /***
 Create by HungVV
@@ -20,31 +15,59 @@ private const val TAG = "MyActivityLifecycleCallbacks"
 class MyActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(p0: Activity, p1: Bundle?) {
         TAQ.setCurrentActivity(p0)
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityCreated")
+        ProviderInstance.logLocalRepo.insertInfoActivity(
+            p0,
+            System.currentTimeMillis(),
+            "onActivityCreated"
+        )
     }
 
     override fun onActivityStarted(p0: Activity) {
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityStarted")
+//        ProviderInstance.logLocalRepo.insertInfoActivity(
+//            p0,
+//            System.currentTimeMillis(),
+//            "onActivityStarted"
+//        )
     }
 
     override fun onActivityResumed(p0: Activity) {
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityResumed")
+//        ProviderInstance.logLocalRepo.insertInfoActivity(
+//            p0,
+//            System.currentTimeMillis(),
+//            "onActivityResumed"
+//        )
     }
 
     override fun onActivityPaused(p0: Activity) {
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityPaused")
+//        ProviderInstance.logLocalRepo.insertInfoActivity(
+//            p0,
+//            System.currentTimeMillis(),
+//            "onActivityPaused"
+//        )
     }
 
     override fun onActivityStopped(p0: Activity) {
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityStopped")
+//        ProviderInstance.logLocalRepo.insertInfoActivity(
+//            p0,
+//            System.currentTimeMillis(),
+//            "onActivityStopped"
+//        )
     }
 
     override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivitySaveInstanceState")
+//        ProviderInstance.logLocalRepo.insertInfoActivity(
+//            p0,
+//            System.currentTimeMillis(),
+//            "onActivitySaveInstanceState"
+//        )
     }
 
     override fun onActivityDestroyed(p0: Activity) {
         TAQ.setCurrentActivity(null)
-        ProviderInstance.logLocalRepo.insertInfoActivity(p0, "onActivityDestroyed")
+        ProviderInstance.logLocalRepo.insertInfoActivity(
+            p0,
+            System.currentTimeMillis(),
+            "onActivityDestroyed"
+        )
     }
 }

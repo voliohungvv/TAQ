@@ -12,8 +12,8 @@ private const val TAG = "LogLocalRepository"
 
 internal interface LogLocalRepository {
 
-     fun insertInfoActivity(activity: Activity,methodName: String)
+     fun insertInfoActivity(activity: Activity,timeCreate: Long,methodName: String)
      fun insertInfoFragment(logLocal: LogLocal)
-     fun insertInfoException(methodName:String,error: String)
+     fun insertInfoException(methodName:String,timeCreate: Long,error: String)
 
 }

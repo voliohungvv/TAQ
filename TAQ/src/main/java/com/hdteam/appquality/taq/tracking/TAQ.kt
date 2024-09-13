@@ -3,9 +3,12 @@ package com.hdteam.appquality.taq.tracking
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
 import com.hdteam.appquality.taq.di.ProviderInstance
 import com.hdteam.appquality.taq.tracking.error.MainUncaughtExceptionHandler
 import com.hdteam.appquality.taq.tracking.screen.MyActivityLifecycleCallbacks
+import com.hdteam.appquality.taq.tracking.screen.MyNavControllerRecordFragmentChange
 import com.hdteam.appquality.taq.utils.extension.setSessionOpenApp
 
 /***
@@ -34,5 +37,9 @@ object TAQ {
 
     fun setCurrentActivity(activity: Activity?){
         _currentActivity = activity
+    }
+
+    fun setNavController(navController: NavController, lifeCycle: Lifecycle) {
+        MyNavControllerRecordFragmentChange.register(navController, lifeCycle)
     }
 }
