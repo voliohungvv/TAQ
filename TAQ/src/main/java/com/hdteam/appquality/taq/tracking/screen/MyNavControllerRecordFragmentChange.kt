@@ -1,5 +1,6 @@
 package com.hdteam.appquality.taq.tracking.screen
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Lifecycle
@@ -7,6 +8,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import com.hdteam.appquality.taq.di.ProviderInstance
 
 /***
 Created by HungVV
@@ -20,14 +22,13 @@ object MyNavControllerRecordFragmentChange {
 
 
     private val navChange by lazy {
-        object : NavController.OnDestinationChangedListener {
-            override fun onDestinationChanged(
-                controller: NavController,
-                destination: NavDestination,
-                arguments: Bundle?
-            ) {
-                Log.e(TAG, "onDestinationChanged: ${controller.currentDestination.toString()}")
-            }
+        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+
+//            Log.e(
+//                TAG,
+//                "onDestinationChanged: ${controller.currentDestination.toString()}"
+//            )
+            ProviderInstance.logLocalRepo.insertInfoFragment(controller, destination, arguments)
         }
     }
 

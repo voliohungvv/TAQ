@@ -2,17 +2,12 @@ package com.hdteam.appquality.taq.tracking.email
 
 import android.content.Context
 import android.util.Log
-import androidx.work.BackoffPolicy
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
-import androidx.work.workDataOf
 import com.hdteam.appquality.taq.model.GmailModel
 import com.hdteam.appquality.taq.model.GmailState
 import com.hdteam.appquality.taq.task.WorkerSendGmail
+import com.hdteam.appquality.taq.tracking.TAQ
 import com.hdteam.appquality.taq.utils.Constant
 import com.hdteam.appquality.taq.utils.util.contentType
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -25,7 +20,6 @@ import java.io.File
 import java.security.Security
 import java.util.Properties
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 import javax.mail.Message
 import javax.mail.Multipart
 import javax.mail.Session
@@ -42,6 +36,7 @@ Created at 13:37/30-08-2024
  ***/
 
 private const val TAG = "GmailSender"
+
 object GmailSender {
 
     private var timeSend = 0L
@@ -88,8 +83,11 @@ object GmailSender {
         gmail: GmailModel
     ) {
         val timeSendInThisSession = System.currentTimeMillis() - timeSend
-        if(timeSendInThisSession < timeIntervalSend){
-            Log.e(TAG, "sendMailNormalSync: prevent send gmail ${timeSendInThisSession} < ${timeIntervalSend}", )
+        if (timeSendInThisSession < timeIntervalSend) {
+            Log.e(
+                TAG,
+                "sendMailNormalSync: prevent send gmail ${timeSendInThisSession} < ${timeIntervalSend}",
+            )
             return
         }
         timeSend = System.currentTimeMillis()
@@ -162,27 +160,13 @@ object GmailSender {
         context: Context,
         gmailModel: GmailModel
     ): UUID {
+        return WorkerSendGmail.sendGmailWorker(context, gmailModel)
+    }
 
-        val inputData = workDataOf(WorkerSendGmail.KEY_GMAIL_DATA to gmailModel.toJson())
-
-        val constraints: Constraints = Constraints
-            .Builder().apply {
-                setRequiredNetworkType(NetworkType.CONNECTED)
-            }.build()
-
-        val task: WorkRequest =
-            OneTimeWorkRequestBuilder<WorkerSendGmail>()
-                .setInputData(inputData)
-                .setConstraints(constraints)
-                .setInitialDelay(1, TimeUnit.SECONDS)
-                .setBackoffCriteria(
-                    BackoffPolicy.LINEAR,
-                    30,
-                    TimeUnit.SECONDS
-                )
-                .build()
-        WorkManager.getInstance(context).enqueue(task)
-        return task.id
+    fun sendGmailEnqueueWithoutContext(
+        gmailModel: GmailModel
+    ): UUID {
+        return WorkerSendGmail.sendGmailWorker(TAQ.application, gmailModel)
     }
 
     fun registerStateGmailWithIDGmail(context: Context, idGmail: UUID) =

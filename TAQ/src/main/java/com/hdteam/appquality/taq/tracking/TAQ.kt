@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import com.hdteam.appquality.taq.data.local.AppDatabase
+import com.hdteam.appquality.taq.di.DataModule
 import com.hdteam.appquality.taq.di.ProviderInstance
 import com.hdteam.appquality.taq.tracking.error.MainUncaughtExceptionHandler
 import com.hdteam.appquality.taq.tracking.screen.MyActivityLifecycleCallbacks
@@ -26,20 +28,43 @@ object TAQ {
     private var _currentActivity: Activity? = null
     val currentActivity get() = _currentActivity
 
-    fun init(application: Application) {
+    private var _isEnabled: Boolean = true
+    val isEnabled: Boolean get() = _isEnabled
+
+    fun init(application: Application, isNewSession: Boolean = true, isEnabled: Boolean = true) {
+        _isEnabled = isEnabled
         this._application = application
-        ProviderInstance.sharePref.setSessionOpenApp()
-        val mainHandler = MainUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler(mainHandler)
-        application.registerActivityLifecycleCallbacks(MyActivityLifecycleCallbacks())
+        if (isEnabled) {
+            if (isNewSession) {
+                ProviderInstance.sharePref.setSessionOpenApp()
+            }
+            val mainHandler = MainUncaughtExceptionHandler()
+            Thread.setDefaultUncaughtExceptionHandler(mainHandler)
+            application.registerActivityLifecycleCallbacks(MyActivityLifecycleCallbacks())
+        }
     }
 
 
-    fun setCurrentActivity(activity: Activity?){
+    internal fun setCurrentActivity(activity: Activity?) {
         _currentActivity = activity
     }
 
     fun setNavController(navController: NavController, lifeCycle: Lifecycle) {
         MyNavControllerRecordFragmentChange.register(navController, lifeCycle)
+    }
+
+    fun deleteAllLog() {
+        ProviderInstance.logLocalRepo.deleteAllLog()
+    }
+
+
+    fun getPathDatabaseLog() = application.getDatabasePath(AppDatabase.appDatabaseName)
+
+    fun deleteDatabaseLog() {
+        DataModule.closeDatabaseLog()
+        val fileDatabase = getPathDatabaseLog()
+        if (fileDatabase.exists()) {
+            fileDatabase.delete()
+        }
     }
 }

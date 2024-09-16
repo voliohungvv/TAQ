@@ -6,6 +6,7 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
@@ -47,12 +48,14 @@ internal class WorkerWriteErrorToDatabase(context: Context, workerParams: Worker
 
             val constraints: Constraints = Constraints
                 .Builder().apply {
+
                 }.build()
 
             val task: WorkRequest =
                 OneTimeWorkRequestBuilder<WorkerWriteErrorToDatabase>()
                     .setInputData(inputData)
                     .setConstraints(constraints)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                     .setInitialDelay(0, TimeUnit.SECONDS)
                     .setBackoffCriteria(
                         BackoffPolicy.LINEAR,

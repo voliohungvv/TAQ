@@ -2,13 +2,9 @@ package com.hdteam.appquality.taq.tracking.error
 
 import android.os.Process
 import android.util.Log
-import androidx.work.WorkManager
-import com.hdteam.appquality.taq.data.local.AppDatabase
 import com.hdteam.appquality.taq.di.ProviderInstance
-import com.hdteam.appquality.taq.model.GmailModel
 import com.hdteam.appquality.taq.task.WorkerWriteErrorToDatabase
-import com.hdteam.appquality.taq.tracking.email.GmailSender
-import com.hdteam.appquality.taq.utils.util.InfoDevice
+import com.hdteam.appquality.taq.utils.extension.delayHandler
 
 /***
 Create by HungVV
@@ -77,6 +73,7 @@ class MainUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
             error = error
         )
 
+
 //        ProviderInstance.logLocalRepo.insertInfoException(
 //            methodName = throwMethodName,
 //            error = error
@@ -86,7 +83,9 @@ class MainUncaughtExceptionHandler : Thread.UncaughtExceptionHandler {
 //        }
         Log.e(TAG, "uncaughtException: abc")
 
-        defaultUEH?.uncaughtException(thread, throwable)
+        delayHandler(500) {
+            defaultUEH?.uncaughtException(thread, throwable)
+        }
     }
 
     private fun killProcess() {

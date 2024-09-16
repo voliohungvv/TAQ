@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.hdteam.appquality.taq.model.GmailModel
+import com.hdteam.appquality.taq.tracking.TAQ
 import com.hdteam.appquality.taq.tracking.email.GmailSender
 import com.hdteam.appquality.taq.utils.util.InfoDevice
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +63,8 @@ class MainActivity : AppCompatActivity() {
 //                    }
 //                }
 //            }
-            val a = 3/0
+//            val a = 3/0
+            TAQ.deleteDatabaseLog()
         }
 
 

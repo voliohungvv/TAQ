@@ -29,4 +29,7 @@ internal interface LogDAO {
 
     @Delete
     suspend fun delete(logLocal: LogLocal)
+
+    @Query("DELETE  FROM log_local")
+    suspend fun deleteAll()
 }

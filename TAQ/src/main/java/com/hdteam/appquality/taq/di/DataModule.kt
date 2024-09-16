@@ -9,7 +9,7 @@ internal object DataModule {
     private var appDatabase: AppDatabase? = null
 
 
-    private fun provideRoom(appContext: Application): AppDatabase {
+    private fun provideRoomLog(appContext: Application): AppDatabase {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
@@ -18,12 +18,16 @@ internal object DataModule {
     }
 
 
-    fun getInstance(appContext: Application): AppDatabase {
+    fun getInstanceDatabaseLog(appContext: Application): AppDatabase {
         synchronized(this) {
-            return appDatabase ?: provideRoom(appContext).also {
+            return appDatabase ?: provideRoomLog(appContext).also {
                 appDatabase = it
             }
         }
     }
 
+    fun closeDatabaseLog() {
+        appDatabase?.close()
+        appDatabase = null
+    }
 }

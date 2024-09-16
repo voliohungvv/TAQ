@@ -3,6 +3,9 @@ package com.hdteam.appquality.taq.utils.extension
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Handler
+import android.os.Looper
+import com.hdteam.appquality.taq.di.ProviderInstance
 
 /***
 Created by HungVV
@@ -10,10 +13,9 @@ Created at 09:32/05-09-2024
  ***/
 
 
-internal fun Context?.isInternetAvailable(): Boolean {
+internal fun isInternetAvailable(): Boolean {
     return try {
-        val connectivityManager =
-            this?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = ProviderInstance.connectivityManager
         val nw = connectivityManager.activeNetwork ?: return false
         val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
         return when {
@@ -29,10 +31,9 @@ internal fun Context?.isInternetAvailable(): Boolean {
 }
 
 
-internal fun Context?.getTypeNetworkConnect(): String {
+internal fun getTypeNetworkConnect(): String {
     return try {
-        val connectivityManager =
-            this?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = ProviderInstance.connectivityManager
         val nw = connectivityManager.activeNetwork ?: return "NO DETECTION"
         val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return "NO DETECTION"
         return when {
@@ -45,4 +46,9 @@ internal fun Context?.getTypeNetworkConnect(): String {
     } catch (e: Exception) {
         "NO DETECTION"
     }
+}
+
+internal fun Any.delayHandler(durationInMillis: Long, block: () -> Unit) {
+    Handler(Looper.getMainLooper())
+        .postDelayed({ block.invoke() }, durationInMillis)
 }

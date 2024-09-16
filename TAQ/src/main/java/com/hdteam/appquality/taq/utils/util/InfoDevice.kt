@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.util.DisplayMetrics
+import com.hdteam.appquality.taq.di.ProviderInstance
 import com.hdteam.appquality.taq.model.InfoDevice
 import com.hdteam.appquality.taq.utils.extension.getTypeNetworkConnect
 import com.hdteam.appquality.taq.utils.extension.isInternetAvailable
@@ -17,26 +18,24 @@ import java.util.TimeZone
 
 object InfoDevice {
 
-    fun getAllInfoAppHtml(context: Context? = null): String {
+    fun getAllInfoAppHtml(): String {
 
         val htmlUtils = HtmlUtils()
         htmlUtils.addTitleColSpan("Info Device", 2)
         htmlUtils.addRowTitle(listOf("Field", "Value"))
-        getAllInfo(context).forEach { info ->
+        getAllInfo().forEach { info ->
             htmlUtils.addRow(listOf(info.name, info.value))
         }
         return htmlUtils.returnTableHtml().toString()
     }
 
-    fun getAllInfo(context: Context?): MutableList<InfoDevice> {
+    fun getAllInfo(): MutableList<InfoDevice> {
         val (availableStorage, totalStorage) = getStorageInfo()
         val (width, height) = getScreenSize()
 
         val listDeviceInfo = mutableListOf<InfoDevice>()
 
-        if (context != null) {
-            listDeviceInfo.addAll(getInfoVersionApp(context))
-        }
+        listDeviceInfo.addAll(getInfoVersionApp())
         listDeviceInfo.add(InfoDevice(name = "Device MODEL", value = Build.MODEL))
         listDeviceInfo.add(InfoDevice(name = "Device BRAND", value = Build.BRAND))
         listDeviceInfo.add(
@@ -97,33 +96,31 @@ object InfoDevice {
                 value = "${FormatUtils.formatBytes(totalStorage)} ($totalStorage)"
             )
         )
-        if (context != null) {
-            val (availableRam, totalRam) = getRamInfo(context)
-            listDeviceInfo.add(
-                InfoDevice(
-                    name = "Device Available Ram",
-                    value = "${FormatUtils.formatBytes(availableRam)}, ($availableRam)"
-                )
+        val (availableRam, totalRam) = getRamInfo()
+        listDeviceInfo.add(
+            InfoDevice(
+                name = "Device Available Ram",
+                value = "${FormatUtils.formatBytes(availableRam)}, ($availableRam)"
             )
-            listDeviceInfo.add(
-                InfoDevice(
-                    name = "Device Total Ram",
-                    value = "${FormatUtils.formatBytes(totalRam)}, ($totalRam)"
-                )
+        )
+        listDeviceInfo.add(
+            InfoDevice(
+                name = "Device Total Ram",
+                value = "${FormatUtils.formatBytes(totalRam)}, ($totalRam)"
             )
-        }
+        )
         listDeviceInfo.add(InfoDevice(name = "Device TimeZone", value = "${getTimeZone()}"))
         listDeviceInfo.add(InfoDevice(name = "Device Locale", value = "${Locale.getDefault()}"))
         listDeviceInfo.add(
             InfoDevice(
                 name = "Device has network",
-                value = "${context?.isInternetAvailable() ?: "No detection"}"
+                value = "${isInternetAvailable()}"
             )
         )
         listDeviceInfo.add(
             InfoDevice(
                 name = "Device type network",
-                value = "${context?.getTypeNetworkConnect() ?: "No detection"}"
+                value = getTypeNetworkConnect() ?: "No detection"
             )
         )
 
@@ -140,8 +137,8 @@ object InfoDevice {
         return listDeviceInfo
     }
 
-    fun getRamInfo(context: Context): Pair<Long, Long> {
-        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    fun getRamInfo(): Pair<Long, Long> {
+        val activityManager = ProviderInstance.activityManager
         val memoryInfo = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(memoryInfo)
 
@@ -151,8 +148,8 @@ object InfoDevice {
         return Pair(availableRam, totalRam)
     }
 
-    fun getRamInfoFormat(context: Context): String {
-        val (availableRam, totalRam) = getRamInfo(context)
+    fun getRamInfoFormat(): String {
+        val (availableRam, totalRam) = getRamInfo()
         return "${FormatUtils.formatBytes(availableRam)}/${FormatUtils.formatBytes(totalRam)}"
     }
 
@@ -188,24 +185,30 @@ object InfoDevice {
         Resources.getSystem().displayMetrics.heightPixels
     )
 
-    fun getVersionCode(context: Context) = try {
-        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    fun getVersionCode() = try {
+        val pInfo = ProviderInstance.application.packageManager.getPackageInfo(
+            ProviderInstance.application.packageName,
+            0
+        )
         val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             pInfo.longVersionCode
         } else {
             pInfo.versionCode.toLong()
         }
         versionCode
-    }catch (e: Exception){
+    } catch (e: Exception) {
         -1
     }
 
-    fun getInfoVersionApp(context: Context) = try {
-        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-        val versionCode = getVersionCode(context)
+    fun getInfoVersionApp() = try {
+        val pInfo = ProviderInstance.application.packageManager.getPackageInfo(
+            ProviderInstance.application.packageName,
+            0
+        )
+        val versionCode = getVersionCode()
 
         val listInfo = mutableListOf<InfoDevice>()
-        listInfo.add(InfoDevice(name = "App Name", value = getApplicationName(context)))
+        listInfo.add(InfoDevice(name = "App Name", value = getApplicationName()))
         listInfo.add(
             InfoDevice(
                 name = "Install first time",
@@ -272,11 +275,11 @@ object InfoDevice {
     }
 
 
-    fun getApplicationName(context: Context): String {
+    fun getApplicationName(): String {
         return try {
-            val applicationInfo = context.applicationInfo
+            val applicationInfo = ProviderInstance.application.applicationInfo
             val stringId = applicationInfo.labelRes
-            if (stringId == 0) applicationInfo.nonLocalizedLabel.toString() else context.getString(
+            if (stringId == 0) applicationInfo.nonLocalizedLabel.toString() else ProviderInstance.application.getString(
                 stringId
             )
         } catch (e: Exception) {
